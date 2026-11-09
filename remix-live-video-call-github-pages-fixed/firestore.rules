@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        request.auth.token.email_verified == true &&
+        request.auth.token.email in ['tanvirmehedi017@gmail.com', 'tanvirmehedi01738@gmail.com'];
+    }
+
+    function isValidCallConfig(data) {
+      return data.keys().hasAll(['profileName', 'profileImage', 'adsterraLink'])
+        && data.keys().hasOnly(['profileName', 'profileImage', 'adsterraLink', 'headerBannerCode', 'socialBarCode', 'popunderCode', 'inFeedBannerCode', 'updatedAt', 'updatedBy'])
+        && data.profileName is string && data.profileName.size() >= 1 && data.profileName.size() <= 60
+        && data.profileImage is string && data.profileImage.size() >= 5 && data.profileImage.size() <= 500000
+        && data.adsterraLink is string && data.adsterraLink.size() >= 5 && data.adsterraLink.size() <= 1000
+        && (!('headerBannerCode' in data) || (data.headerBannerCode is string && data.headerBannerCode.size() <= 50000))
+        && (!('socialBarCode' in data) || (data.socialBarCode is string && data.socialBarCode.size() <= 50000))
+        && (!('popunderCode' in data) || (data.popunderCode is string && data.popunderCode.size() <= 50000))
+        && (!('inFeedBannerCode' in data) || (data.inFeedBannerCode is string && data.inFeedBannerCode.size() <= 50000))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 100))
+        && (!('updatedBy' in data) || (data.updatedBy is string && data.updatedBy.size() <= 100));
+    }
+
+    match /settings/{settingId} {
+      allow get: if isValidId(settingId);
+      allow list: if false;
+      allow create, update: if isValidId(settingId) && isAdmin() && isValidCallConfig(incoming());
+      allow delete: if false;
+    }
+  }
+}

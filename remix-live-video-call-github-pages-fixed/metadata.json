@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix Live Video Call",
+  "description": "Mobile-friendly incoming call interface with real-time profile settings and direct link routing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

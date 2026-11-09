@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "CallConfig": {
+      "title": "CallConfig",
+      "description": "Configuration for caller profile, Adsterra direct link, and ad network slots.",
+      "type": "object",
+      "properties": {
+        "profileName": {
+          "type": "string",
+          "description": "Name of the caller shown on the screen",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "profileImage": {
+          "type": "string",
+          "description": "URL or high quality photo string for caller avatar",
+          "minLength": 5,
+          "maxLength": 500000
+        },
+        "adsterraLink": {
+          "type": "string",
+          "description": "Adsterra Direct Link or target sponsor advertising link",
+          "minLength": 5,
+          "maxLength": 1000
+        },
+        "headerBannerCode": {
+          "type": "string",
+          "description": "HTML or script code for Header Top Banner ad",
+          "maxLength": 50000
+        },
+        "socialBarCode": {
+          "type": "string",
+          "description": "HTML or script code for Social Bar ad",
+          "maxLength": 50000
+        },
+        "popunderCode": {
+          "type": "string",
+          "description": "HTML or script code for Popunder ad",
+          "maxLength": 50000
+        },
+        "inFeedBannerCode": {
+          "type": "string",
+          "description": "HTML or script code for Video and In-Feed Banner ad",
+          "maxLength": 50000
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last updated timestamp",
+          "maxLength": 100
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "Identifier of the admin who updated the configuration",
+          "maxLength": 100
+        }
+      },
+      "required": ["profileName", "profileImage", "adsterraLink"]
+    }
+  },
+  "firestore": {
+    "/settings/{settingId}": {
+      "schema": "CallConfig",
+      "description": "Stores app settings and calling configuration"
+    }
+  }
+}
